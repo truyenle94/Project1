@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        canvas {
+            border:1px black solid;
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body onload="startGame()">
+<script>
+    let hero_image = new Image();
+    hero_image.src = "hero.png";
+
+    let monster_image = new Image();
+    monster_image.src = "monster.png"
+
+    var hero;
+    var monster;
+
+    function startGame() {
+        hero = new component(hero_image, 70, 120);
+        monster  = new component(monster_image, 300, 120);
+        killingzone.start();
+    }
+
+    var killingzone = {
+        canvas : document.createElement("canvas"),
+        start : function() {
+            this.canvas.width = 500;
+            this.canvas.height = 300;
+            this.context = this.canvas.getContext("2d");
+            document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+            this.interval = setInterval(updateGameArea, 20);
+        },
+        clear : function() {
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+    }
+
+    function component(pics, x, y) {
+        this.speedX = 0;
+        this.speedY = 0;
+        this.x = x;
+        this.y = y;
+        this.update = function() {
+            ctx = killingzone.context;
+            ctx.drawImage(pics,this.x, this.y);
+        }
+        this.newPos = function() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+        }
+    }
+
+    function updateGameArea() {
+        killingzone.clear();
+        monster.update();
+        hero.newPos();
+        hero.update();
+    }
+
+    function moveup() {
+        hero.speedY = -2;
+    }
+
+    function movedown() {
+        hero.speedY = 2;
+    }
+
+    function moveleft() {
+        hero.speedX = -2;
+    }
+
+    function moveright() {
+        hero.speedX = 2;
+    }
+
+    function clearmove() {
+        hero.speedX = 0;
+        hero.speedY = 0;
+    }
+
+    function shooting(event) {
+
+
+            var ctx = killingzone.canvasgetContext("2d");
+            var x = event.offsetX;
+            var y = event.offsetY;
+
+            ctx.beginPath();
+            ctxc.moveto(hero.x,hero.y);
+            ctx.lineto(x,y);
+            ctx.stroke();
+
+    }
+
+    function action(event){
+        var x = event.which || event.keyCode;
+        if (x == 40) {
+            if (hero.y > 263) {
+                clearmove()
+            }
+            if (hero.y < 263) {
+                movedown();
+            }
+        }
+
+        else if(x == 37){
+            if(hero.x < 35 )
+            {
+                clearmove()
+            }
+            if(hero.x > 35){
+                moveleft();
+            }
+        }
+        else if(x == 39){
+            if(hero.x > 480)
+            {
+                clearmove()
+            }
+            if(hero.x<480){
+                moveright();
+            }
+        }
+        else if(x == 38){
+            if(hero.y < 10)
+            {
+                clearmove()
+            }
+            if(hero.y > 10){
+                moveup();
+            }
+        }
+    }
+</script>
+<div >
+    <button size="50" onkeydown="action(event)" onkeyup="clearmove()" onclick="shooting(event)">Start</button>
+</div>
+<p>Use your arrow keys to move your hero and click your mouse to shoot the monster(</p>
+</body>
+</html>
